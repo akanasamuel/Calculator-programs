@@ -24,7 +24,7 @@
     border: none;
     display: flex;
     place-items: end;
-    padding-top: 60px;
+    padding-top: 50px;
 }
 
 #calculator-body {
@@ -43,6 +43,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+
 }
 
 #operator-keys,
@@ -50,12 +51,19 @@
     flex: 1;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-
 }
+#inverse-keys{
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    display: none;
+}
+
 
 #number-keys button{background: hsl(0,0%,41%);color: white;}
 #special-keys button{background: hsl(120,73%,75%);}
 #operator-keys button{background: hsl(38,100%,85%);}
+#inverse-keys button{background: hsl(120,73%,75%);}
 
 #calculator-body {
     flex: 1;
@@ -68,12 +76,7 @@ button{
     font-size: 35px;
     border:none ;
 }
-#number-keys button:hover {
-    background: hsl(0,0%,46%);
-}
-#special-keys button:hover {
-    background: hsl(120,73%,80%);
-}
-#operator-keys button:hover {
-    background: hsl(38,100%,88%);
-}
+#number-keys button:hover {background: hsl(0,0%,46%);}
+#special-keys button:hover {background: hsl(120,73%,80%);}
+#operator-keys button:hover {background: hsl(38,100%,88%);}
+#inverse-keys button:hover {background: hsl(120,73%,80%);}
