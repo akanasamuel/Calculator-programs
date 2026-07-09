@@ -81,8 +81,10 @@ function tokenize(expression){
     
     if("+-×÷^()".includes(char)){
       let prev = tokens[tokens.length-1];
-      if(!prev || prev.type === "operator" || prev.value === "("){
-        tokens.push({type:"operator" ,value: char =="-" ? "neg" : "pos"})
+      if((char== "+" || char == "-") && (!prev || prev.type === "operator" || prev.value === "(")){
+        tokens.push({type:"operator" ,value: char =="-" ? "neg" : "pos"});
+        i++;
+        continue;
       }  
       tokens.push({type: char === "(" || char === ")" ? "paren" : "operator"  , value: char });
       i++;
@@ -92,6 +94,21 @@ function tokenize(expression){
   return tokens;
   
 };
+
+//--------Implicit multiplication function
+function implicitMultiplication(tokens){
+  let implicitTokens = [];
+  for(let i=0;i<tokens.length;i++){
+    implicitTokens.push(tokens[i]);
+    let currentToken = tokens[i];
+    let nextToken = tokens[i+1];
+    if(!nextToken)continue;
+    if((currentToken.type==="number" || currentToken.type ==="postfix" || currentToken.value===")") && (nextToken.type === "number" || nextToken.type ==="function" ||nextToken.value ==="(")){
+      implicitTokens.push({type:"operator" , value:"×"});
+    }
+  }
+  return implicitTokens;
+}
 
 //------------Setting operator precedence
 function operatorPrecedence(operator){
@@ -153,37 +170,45 @@ function evaluation(output){
     if(token.type=="number"){
     stack.push(token.value);
     }else if(token.type=="operator"){
-      let b = stack.pop();
-      let a = stack.pop();
-      
-      switch(token.value){
-        case '+': 
-          stack.push(a+b);
-          break;
-        case '-':
-          stack.push(a-b);
-          break;
-        case '×':
-          stack.push(a*b);
-          break;
-        case '÷':
-          if(b==0){
-            screen.value = "Cannot devide by zero. Press Clear";
-            continue;
-          }
-          stack.push(a/b);
-          break;
-        case '^':
-          stack.push(Math.pow(a,b));
-          break;
-        case 'neg':
-          stack.push(-a);
-          break;
-        case 'pos':
-          stack.push(a);
-          break;
-        default:
-          break;
+      if(token.value =="neg" || token.value == "pos"){
+        let a = stack.pop();
+        switch(token.value){
+          case 'neg':
+            stack.push(-a);
+            break;
+          case 'pos':
+            stack.push(a);
+            break;
+          default: 
+            break;
+        }
+      }else{
+        let b = stack.pop();
+        let a = stack.pop();
+        
+        switch(token.value){
+          case '+': 
+            stack.push(a+b);
+            break;
+          case '-':
+            stack.push(a-b);
+            break;
+          case '×':
+            stack.push(a*b);
+            break;
+          case '÷':
+            if(b==0){
+              screen.value = "Cannot devide by zero. Press Clear";
+              continue;
+            }
+            stack.push(a/b);
+            break;
+          case '^':
+            stack.push(Math.pow(a,b));
+            break;
+          default:
+            break;
+        }      
       }
     }else if(token.type =="postfix"){
       let a = stack.pop();
@@ -234,7 +259,8 @@ function evaluation(output){
 //---------The function that unites all the other functions
 function calculate(expression){
   const tokens = tokenize(expression);
-  const output = shuntingYard(tokens);
+  const implicitTokens = implicitMultiplication(tokens);
+  const output = shuntingYard(implicitTokens);
   const result = evaluation(output);
   return result;
   
