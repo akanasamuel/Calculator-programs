@@ -1,4 +1,6 @@
 let screen = document.getElementById("screen");
+let angleModebtn = document.getElementById("angle-mode");
+let angleMode = "deg";
 
 //---------DISPLAY WIRING
 function displayWiring(){
@@ -33,6 +35,17 @@ function inverseTabSwitching(){
     });
   });
 };
+
+//--------------Angle Mode Switching
+angleModebtn.addEventListener("click",()=>{
+  if(angleModebtn.textContent == "RAD"){
+    angleMode = "rad";
+    angleModebtn.textContent = "DEG";
+  }else{
+    angleMode = "deg";
+    angleModebtn.textContent = "RAD";
+  }
+});
 
 //-----------Factorial function
 function factorial(num){
@@ -224,7 +237,7 @@ function evaluation(output){
       }
     }else if(token.type == "function"){
       let a = stack.pop();
-      let adeg = a*(Math.PI/180);
+      let aAngle = angleMode ==="deg" ? a*(Math.PI/180) : a;
       switch(token.value){
         case 'ln':
           stack.push(Math.log(a));
@@ -233,13 +246,31 @@ function evaluation(output){
           stack.push(Math.log10(a));
           break;
         case 'sin':
-          stack.push(Math.sin(adeg));
+          stack.push(Math.sin(aAngle));
           break;
         case 'cos':
-          stack.push(Math.cos(adeg));
+          stack.push(Math.cos(aAngle));
           break;
         case 'tan':
-          stack.push(Math.tan(adeg));
+          stack.push(Math.tan(aAngle));
+          break;
+        case 'arccos':
+          stack.push(Math.acos(aAngle));
+          break;
+        case 'arcsin':
+          stack.push(Math.asin(aAngle));
+          break;
+        case 'arctan':
+          stack.push(Math.atan(aAngle));
+          break;
+        case 'sec':
+          stack.push(Math.sec(aAngle));
+          break;
+        case 'csec':
+          stack.push(Math.csec(aAngle));
+          break;
+        case 'cot':
+          stack.push(Math.cot(aAngle));
           break;
         case '√':
           stack.push(Math.sqrt(a));
@@ -279,7 +310,8 @@ inverseTabSwitching();
 //clear and DEL functionality
 //Main Operations,factorial and percentage Calculation
 //Constants
-//The special operations
+//The special operations and functions
+//immplicit multiplication
 
 //changes
 //Swaped the log and exponent
